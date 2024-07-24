@@ -55,16 +55,20 @@ router.post('/signup', async (req, res) => {
         const user = await User.findOne({ email, username });
         const user1 = await User.findOne({ username });
         if (user || user1) {
-            return res.render("signup", { ...req.body, error_msg: "A User with that email or username already exists", pageTitle: "Signup" });
+            req.flash("error_msg", "A User with that email or username already exists");
+            return res.redirect("/signup");
         } else {
             if (!username || !fullname || !gender || !country || !currency || !security_question || !security_answer || !email || !phone || !password || !password2) {
-                return res.render("signup", { ...req.body, res, error_msg: "Please fill all fields", pageTitle: "Signup" });
+                req.flash("error_msg", "Please fill all fields");
+                return res.redirect("/signup");
             } else {
                 if (password !== password2) {
-                    return res.render("signup", { ...req.body, res, error_msg: "Both passwords are not thesame", pageTitle: "Signup" });
+                    req.flash("error_msg", "Both passwords are not thesame");
+                    return res.redirect("/signup");
                 }
                 if (password2.length < 6) {
-                    return res.render("signup", { ...req.body, res, error_msg: "Password length should be min of 6 chars", pageTitle: "Signup" });
+                    req.flash("error_msg", "Password length should be min of 6 chars");
+                    return res.redirect("/signup");
                 }
                 const newUser = {
                     username,
